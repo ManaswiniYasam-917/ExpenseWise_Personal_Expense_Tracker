@@ -1,0 +1,9 @@
+{
+  "name": "expensewise-personal-expense-tracker",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Advanced Personal Expense Tracker & Finance Dashboard",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r index.html styles.css app.js dist/ 2>/dev/null || true"
+  }
+}

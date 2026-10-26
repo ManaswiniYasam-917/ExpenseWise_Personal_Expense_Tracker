@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ExpenseWise — Advanced Personal Finance & Expense Tracker</title>
+  <meta name="description" content="Master your money with ExpenseWise. Track expenses, analyze cashflow, set intelligent budgets, and achieve savings goals.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-theme="light">
+
+  <!-- Toast Notification System -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- AUTH PORTAL (Displayed when user is not signed in) -->
+  <section id="authPortal" class="auth-portal">
+    <div class="auth-container">
+      <!-- Left Hero Banner -->
+      <div class="auth-hero">
+        <div class="auth-hero-header">
+          <div class="brand-badge">
+            <span class="brand-icon">◈</span>
+            <span class="brand-name">ExpenseWise</span>
+            <span class="version-tag">v2.0 PRO</span>
+          </div>
+        </div>
+        <div class="auth-hero-body">
+          <h1 class="hero-title">Master your money with clarity & confidence.</h1>
+          <p class="hero-sub">Experience intelligent personal finance: seamless transaction tracking, visual analytics, predictive budget alerts, and automated recurring rules.</p>
+          
+          <div class="hero-features">
+            <div class="hero-feature-item">
+              <span class="feat-icon">📊</span>
+              <div>
+                <strong>Visual Analytics & Trends</strong>
+                <span>Interactive category breakdowns and daily cashflow trends.</span>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <span class="feat-icon">🎯</span>
+              <div>
+                <strong>Smart Budgets & Goal Tracking</strong>
+                <span>Real-time limit threshold alerts and visual progress milestones.</span>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <span class="feat-icon">⚡</span>
+              <div>
+                <strong>Instant CSV & PDF Reports</strong>
+                <span>Import your bank statements or export presentation-ready reports.</span>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <span class="feat-icon">🔒</span>
+              <div>
+                <strong>Bank-Grade Privacy & Offline Sync</strong>
+                <span>Your financial data stays secure with encrypted sessions and offline backup.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="auth-hero-footer">
+          <div class="user-proof">
+            <div class="proof-avatars">
+              <span>👩‍💼</span><span>👨‍💻</span><span>👩‍🔬</span><span>👨‍🎓</span>
+            </div>
+            <span>Trusted by thousands of smart savers worldwide.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Auth Card -->
+      <div class="auth-card-wrapper">
+        <div class="auth-card">
+          <!-- Auth Navigation Tabs -->
+          <div class="auth-tabs">
+            <button type="button" class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+            <button type="button" class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+          </div>
+
+          <!-- Quick 1-Click Demo Login Banner -->
+          <div class="demo-login-box">
+            <div class="demo-info">
+              <span class="demo-badge">QUICK TEST</span>
+              <p>Explore all features immediately with preloaded demo data.</p>
+            </div>
+            <button type="button" id="quickDemoBtn" class="btn btn-demo">
+              <span>⚡ 1-Click Demo Sign In</span>
+            </button>
+          </div>
+
+          <div class="auth-divider">
+            <span>or continue with email</span>
+          </div>
+
+          <!-- Sign In Form -->
+          <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input id="loginEmail" name="email" type="email" placeholder="name@example.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="label-row">
+                <label for="loginPassword">Password</label>
+                <button type="button" class="btn-text" onclick="togglePasswordVisibility('loginPassword', this)">Show</button>
+              </div>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input id="loginPassword" name="password" type="password" placeholder="Enter your password" minlength="8" required autocomplete="current-password">
+              </div>
+            </div>
+
+            <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-block">
+              <span>Sign In to Dashboard →</span>
+            </button>
+          </form>
+
+          <!-- Sign Up Form (hidden by default) -->
+          <form id="registerForm" class="auth-form" style="display:none;" onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label for="regName">Full Name</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input id="regName" name="name" type="text" placeholder="e.g. Manaswini" required minlength="2" autocomplete="name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail">Email Address</label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input id="regEmail" name="email" type="email" placeholder="name@example.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="label-row">
+                <label for="regPassword">Password</label>
+                <button type="button" class="btn-text" onclick="togglePasswordVisibility('regPassword', this)">Show</button>
+              </div>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input id="regPassword" name="password" type="password" placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+              </div>
+              <span class="field-hint">Use 8 or more characters with letters & numbers.</span>
+            </div>
+
+            <button type="submit" id="registerSubmitBtn" class="btn btn-primary btn-block">
+              <span>Create Free Account →</span>
+            </button>
+          </form>
+
+          <div class="auth-card-footer">
+            <p>100% Free & Open Source · No credit card required</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN APP SHELL (Displayed when user is signed in) -->
+  <div id="appShell" class="app-shell" style="display:none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="appSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-logo">◈</div>
+          <div class="brand-text">
+            <h2>ExpenseWise</h2>
+            <span class="brand-tag">FINANCE PRO</span>
+          </div>
+        </div>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" onclick="toggleMobileSidebar()" aria-label="Close Sidebar">✕</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">MENU</div>
+        <button type="button" class="nav-btn active" data-view="dashboard" onclick="navigateTo('dashboard')">
+          <span class="nav-icon">▦</span>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button type="button" class="nav-btn" data-view="transactions" onclick="navigateTo('transactions')">
+          <span class="nav-icon">⇄</span>
+          <span class="nav-label">Transactions</span>
+          <span class="nav-badge" id="txCountBadge">0</span>
+        </button>
+        <button type="button" class="nav-btn" data-view="budgets" onclick="navigateTo('budgets')">
+          <span class="nav-icon">◉</span>
+          <span class="nav-label">Budgets</span>
+          <span class="nav-status-dot" id="budgetAlertDot" style="display:none;"></span>
+        </button>
+        <button type="button" class="nav-btn" data-view="goals" onclick="navigateTo('goals')">
+          <span class="nav-icon">◎</span>
+          <span class="nav-label">Savings Goals</span>
+        </button>
+        <button type="button" class="nav-btn" data-view="recurring" onclick="navigateTo('recurring')">
+          <span class="nav-icon">↻</span>
+          <span class="nav-label">Recurring</span>
+        </button>
+        <button type="button" class="nav-btn" data-view="insights" onclick="navigateTo('insights')">
+          <span class="nav-icon">✦</span>
+          <span class="nav-label">Smart Insights</span>
+        </button>
+        <button type="button" class="nav-btn" data-view="categories" onclick="navigateTo('categories')">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Categories & Tools</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Storage / Backend Pill -->
+      <div class="sidebar-storage-card">
+        <div class="storage-indicator">
+          <span class="status-indicator-dot" id="backendStatusDot"></span>
+          <div class="storage-details">
+            <span class="storage-title" id="backendStatusTitle">Connecting...</span>
+            <span class="storage-sub" id="backendStatusSub">Sync active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile & Sign Out -->
+      <div class="sidebar-user-box">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <span class="user-name" id="userNameLabel">User</span>
+          <span class="user-email" id="userEmailLabel">user@example.com</span>
+        </div>
+        <button type="button" class="btn-logout" onclick="logout(true)" title="Sign Out">
+          <span>⏻</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Application Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button type="button" class="mobile-menu-trigger" onclick="toggleMobileSidebar()" aria-label="Open Menu">
+            <span>☰</span>
+          </button>
+          <div>
+            <div class="header-breadcrumb">
+              <span id="breadcrumbSection">Overview</span>
+              <span class="breadcrumb-separator">/</span>
+              <span class="breadcrumb-current" id="headerTitle">Dashboard</span>
+            </div>
+            <h1 class="header-page-title" id="pageMainHeading">Financial Overview</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Currency Selector -->
+          <div class="currency-picker" title="Change Currency Display">
+            <span class="picker-icon">💱</span>
+            <select id="currencySelector" onchange="changeCurrency(this.value)">
+              <option value="INR" selected>₹ INR (Rupees)</option>
+              <option value="USD">$ USD (US Dollar)</option>
+              <option value="EUR">€ EUR (Euro)</option>
+              <option value="GBP">£ GBP (British Pound)</option>
+            </select>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <span id="themeIcon">🌙</span>
+          </button>
+
+          <!-- Export Actions -->
+          <div class="header-export-actions">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportData('csv')" title="Export transactions to CSV spreadsheet">
+              <span>📄 CSV</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportData('pdf')" title="Download formatted PDF financial report">
+              <span>📑 PDF</span>
+            </button>
+          </div>
+
+          <!-- Global Quick Add Button -->
+          <button type="button" class="btn btn-primary" onclick="openAddTxModal()">
+            <span>+ Add Transaction</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Active Alerts Banner (for Budget Warnings) -->
+      <div id="activeAlertsBanner" class="alerts-banner" style="display:none;"></div>
+
+      <!-- VIEW 1: DASHBOARD -->
+      <section id="view-dashboard" class="app-view">
+        <!-- Quick Stat Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card stat-income">
+            <div class="stat-icon-wrapper">📈</div>
+            <div class="stat-content">
+              <span class="stat-label">Total Income</span>
+              <h2 class="stat-value" id="dashTotalIncome">₹0.00</h2>
+              <div class="stat-footer">
+                <span class="stat-period">This Month</span>
+                <span class="trend-pill trend-up" id="incomeTrend">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-expense">
+            <div class="stat-icon-wrapper">📉</div>
+            <div class="stat-content">
+              <span class="stat-label">Total Expenses</span>
+              <h2 class="stat-value" id="dashTotalExpense">₹0.00</h2>
+              <div class="stat-footer">
+                <span class="stat-period">This Month</span>
+                <span class="trend-pill trend-down" id="expenseTrend">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-balance">
+            <div class="stat-icon-wrapper">💎</div>
+            <div class="stat-content">
+              <span class="stat-label">Net Balance</span>
+              <h2 class="stat-value" id="dashNetBalance">₹0.00</h2>
+              <div class="stat-footer">
+                <span class="stat-period">Cashflow Surplus</span>
+                <span class="trend-pill trend-neutral" id="balanceStatus">Healthy</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card stat-goals">
+            <div class="stat-icon-wrapper">🎯</div>
+            <div class="stat-content">
+              <span class="stat-label">Savings Target</span>
+              <h2 class="stat-value" id="dashGoalsSaved">₹0.00</h2>
+              <div class="stat-footer">
+                <span class="stat-period"><span id="dashActiveGoalsCount">0</span> Active Goals</span>
+                <span class="trend-pill trend-up" id="dashGoalsPercent">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Category Breakdown Chart -->
+          <div class="card chart-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Expense Breakdown by Category</h3>
+                <p class="card-subtitle">Spending distribution across categories this month</p>
+              </div>
+              <span class="card-badge" id="categoryChartCount">0 Categories</span>
+            </div>
+            <div class="chart-wrapper donut-wrapper">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Daily Cashflow Trend Chart -->
+          <div class="card chart-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Daily Cashflow Trend</h3>
+                <p class="card-subtitle">Income vs expenses activity across the current month</p>
+              </div>
+              <div class="chart-legend-custom">
+                <span class="legend-dot income-dot"></span> Income
+                <span class="legend-dot expense-dot"></span> Expense
+              </div>
+            </div>
+            <div class="chart-wrapper line-wrapper">
+              <canvas id="dailyChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline Quick Add Transaction Card -->
+        <div class="card quick-add-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">⚡ Quick Record Transaction</h3>
+              <p class="card-subtitle">Fast entry for your everyday spending and earnings</p>
+            </div>
+          </div>
+          <form id="inlineTxForm" class="quick-add-form" onsubmit="handleQuickAddTx(event)">
+            <div class="quick-input-group">
+              <label>Type</label>
+              <select name="type" id="quickTxType" onchange="updateQuickCategories(this.value)" required>
+                <option value="expense">Expense (-)</option>
+                <option value="income">Income (+)</option>
+              </select>
+            </div>
+
+            <div class="quick-input-group">
+              <label>Amount</label>
+              <input name="amount" type="number" step="0.01" min="0.01" placeholder="0.00" required>
+            </div>
+
+            <div class="quick-input-group">
+              <label>Category</label>
+              <select name="category" id="quickTxCategory" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="quick-input-group">
+              <label>Date</label>
+              <input name="transaction_date" id="quickTxDate" type="date" required>
+            </div>
+
+            <div class="quick-input-group">
+              <label>Payment Method</label>
+              <select name="payment_method">
+                <option value="UPI">UPI / GPay</option>
+                <option value="Card">Debit / Credit Card</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank transfer">Net Banking</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="quick-input-group span-two">
+              <label>Description / Note</label>
+              <input name="note" placeholder="e.g. Grocery store, dinner, freelance project...">
+            </div>
+
+            <div class="quick-input-group submit-group">
+              <label>&nbsp;</label>
+              <button type="submit" class="btn btn-primary btn-block">
+                <span>+ Save Record</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Recent Transactions Table & Active Budget Snapshot -->
+        <div class="dashboard-split-grid">
+          <!-- Recent Transactions -->
+          <div class="card recent-tx-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Recent Transactions</h3>
+                <p class="card-subtitle">Your latest financial activity</p>
+              </div>
+              <button type="button" class="btn-text font-bold" onclick="navigateTo('transactions')">
+                View All Transactions →
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Method</th>
+                    <th class="text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="dashRecentTxBody">
+                  <tr>
+                    <td colspan="5" class="empty-cell">Loading recent records...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Active Budget Snapshot -->
+          <div class="card budget-snapshot-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Budget Health Snapshot</h3>
+                <p class="card-subtitle">Current month limits</p>
+              </div>
+              <button type="button" class="btn-text font-bold" onclick="navigateTo('budgets')">
+                Manage Budgets →
+              </button>
+            </div>
+            <div id="dashBudgetList" class="budget-snapshot-list">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: TRANSACTIONS (CRUD + Search + Filter + CSV Import) -->
+      <section id="view-transactions" class="app-view" style="display:none;">
+        <div class="card">
+          <!-- Filter and Search Header -->
+          <div class="tx-filter-header">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="txSearchInput" placeholder="Search by note, category or payment..." oninput="debounceFilterTransactions()">
+            </div>
+
+            <div class="filter-controls">
+              <select id="filterType" onchange="filterTransactions()">
+                <option value="">All Types (Income & Expenses)</option>
+                <option value="expense">Expenses Only</option>
+                <option value="income">Income Only</option>
+              </select>
+
+              <select id="filterCategory" onchange="filterTransactions()">
+                <option value="">All Categories</option>
+                <!-- Populated dynamically -->
+              </select>
+
+              <input type="date" id="filterStartDate" onchange="filterTransactions()" title="Start Date">
+              <input type="date" id="filterEndDate" onchange="filterTransactions()" title="End Date">
+
+              <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="openAddTxModal()">+ Add New</button>
+            </div>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Payment Method</th>
+                  <th>Note / Details</th>
+                  <th class="text-right">Amount</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allTxTableBody">
+                <tr>
+                  <td colspan="7" class="empty-cell">No transactions found. Add your first record above!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <span class="footer-count" id="txTotalCountLabel">Showing 0 transactions</span>
+            <div class="footer-actions">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="exportData('csv')">Export Filtered CSV</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CSV Bulk Import & Statement Reconciliation -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📥 Bulk Import Transactions via CSV</h3>
+              <p class="card-subtitle">Upload bank statements or spreadsheet records in seconds</p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadSampleCSV()">
+              Download Sample CSV Template
+            </button>
+          </div>
+
+          <div class="csv-upload-box">
+            <div class="csv-drop-area" id="csvDropArea">
+              <span class="drop-icon">📁</span>
+              <h4>Select or Drag & Drop your CSV file</h4>
+              <p>Supported columns: <code>type, amount, transaction_date, category, payment_method, note</code></p>
+              <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVFileSelected(event)">
+              <label for="csvFileInput" class="btn btn-secondary">Browse CSV File</label>
+            </div>
+          </div>
+
+          <!-- CSV Import Preview Area -->
+          <div id="csvPreviewArea" class="csv-preview-container" style="display:none;">
+            <div class="preview-header">
+              <h4 id="csvPreviewStats">Preview: 0 valid rows ready</h4>
+              <div class="preview-actions">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="cancelCSVImport()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="confirmCSVImportBtn" onclick="confirmCSVImport()">
+                  Confirm & Import Records
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive max-h-300">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Row</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Method</th>
+                    <th>Note</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="csvPreviewTableBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: BUDGETS -->
+      <section id="view-budgets" class="app-view" style="display:none;">
+        <div class="two-col-grid">
+          <!-- Create / Update Budget Form -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Set Monthly Budget</h3>
+                <p class="card-subtitle">Cap spending and get proactive alerts before you overspend</p>
+              </div>
+            </div>
+
+            <form id="budgetForm" class="stack-form" onsubmit="handleSaveBudget(event)">
+              <div class="form-group">
+                <label for="budgetCategorySelect">Budget Target</label>
+                <select id="budgetCategorySelect" name="category">
+                  <option value="">🌐 Overall Monthly Budget (All Expenses)</option>
+                  <!-- Populated with expense categories -->
+                </select>
+                <span class="field-hint">Leave as Overall to cap total monthly spending, or pick a specific category.</span>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="budgetLimitInput">Limit Amount</label>
+                  <input id="budgetLimitInput" name="limit_amount" type="number" min="1" step="0.01" placeholder="e.g. 15000" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="budgetThresholdInput">Alert Threshold (%)</label>
+                  <input id="budgetThresholdInput" name="threshold_percent" type="number" min="10" max="100" value="80" required>
+                  <span class="field-hint">Notify when reached</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="budgetMonthSelect">Month</label>
+                  <select id="budgetMonthSelect" name="month" required>
+                    <!-- Months 1 to 12 -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="budgetYearInput">Year</label>
+                  <input id="budgetYearInput" name="year" type="number" min="2000" max="2100" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <span>Save Budget Target</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Active Budgets List -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Budget Health & Progress</h3>
+                <p class="card-subtitle" id="budgetPeriodLabel">Current Month Tracking</p>
+              </div>
+            </div>
+
+            <div id="budgetsListContainer" class="budgets-card-list">
+              <div class="empty-state">No budgets configured for this month. Set one using the form on the left!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: SAVINGS GOALS -->
+      <section id="view-goals" class="app-view" style="display:none;">
+        <div class="two-col-grid">
+          <!-- Create Goal Form -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Create New Savings Goal</h3>
+                <p class="card-subtitle">Save toward an emergency fund, vehicle, vacation, or gadget</p>
+              </div>
+            </div>
+
+            <form id="goalForm" class="stack-form" onsubmit="handleCreateGoal(event)">
+              <div class="form-group">
+                <label for="goalTitleInput">Goal Title</label>
+                <input id="goalTitleInput" name="title" type="text" placeholder="e.g. Emergency Fund, New Laptop" required minlength="2">
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="goalTargetAmount">Target Amount</label>
+                  <input id="goalTargetAmount" name="target_amount" type="number" min="1" step="0.01" placeholder="e.g. 50000" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="goalCurrentAmount">Already Saved</label>
+                  <input id="goalCurrentAmount" name="current_amount" type="number" min="0" step="0.01" value="0" placeholder="0.00">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="goalTargetDate">Target Date (Optional)</label>
+                <input id="goalTargetDate" name="target_date" type="date">
+                <span class="field-hint">Helps calculate required daily and monthly savings velocity.</span>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <span>Create Savings Goal</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Savings Goals Cards -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Your Savings Milestones</h3>
+                <p class="card-subtitle">Track your progress and celebrate financial wins</p>
+              </div>
+            </div>
+
+            <div id="goalsListContainer" class="goals-card-list">
+              <div class="empty-state">No savings goals created yet. Set your first financial milestone!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: RECURRING TRANSACTIONS -->
+      <section id="view-recurring" class="app-view" style="display:none;">
+        <div class="two-col-grid">
+          <!-- Create Recurring Rule Form -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Add Recurring Transaction</h3>
+                <p class="card-subtitle">Automate repeating subscriptions, rent, salaries, and bills</p>
+              </div>
+            </div>
+
+            <form id="recurringForm" class="stack-form" onsubmit="handleCreateRecurring(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select name="type" id="recTypeSelect" onchange="updateRecCategories(this.value)" required>
+                    <option value="expense">Expense (-)</option>
+                    <option value="income">Income (+)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Category</label>
+                  <select name="category" id="recCategorySelect" required>
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Frequency</label>
+                  <select name="frequency" required>
+                    <option value="monthly" selected>Monthly (Once a month)</option>
+                    <option value="weekly">Weekly (Every 7 days)</option>
+                    <option value="yearly">Yearly (Annual renewal)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Next Due Date</label>
+                  <input name="next_run_date" type="date" id="recNextDate" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Payment Method</label>
+                  <select name="payment_method">
+                    <option value="UPI">UPI</option>
+                    <option value="Card">Card</option>
+                    <option value="Bank transfer">Bank Transfer</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Description / Label</label>
+                <input name="note" placeholder="e.g. Netflix, Apartment Rent, Monthly Salary">
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <span>Save Recurring Rule</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Active Recurring Rules List -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Automated Recurring Rules</h3>
+                <p class="card-subtitle">Active scheduled subscriptions & recurring income</p>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="processDueRecurring()">
+                ⚡ Process Due Now
+              </button>
+            </div>
+
+            <div id="recurringListContainer" class="recurring-rules-list">
+              <div class="empty-state">No recurring transaction rules found. Add one on the left!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: SMART INSIGHTS & FINANCIAL HEALTH -->
+      <section id="view-insights" class="app-view" style="display:none;">
+        <div class="insights-summary-banner">
+          <div class="health-score-card">
+            <div class="score-circle">
+              <span class="score-num" id="healthScoreNum">85</span>
+              <span class="score-total">/100</span>
+            </div>
+            <div class="score-info">
+              <h3>Financial Health Score</h3>
+              <p id="healthScoreGrade">Strong · Positive savings balance and controlled spending</p>
+            </div>
+          </div>
+
+          <div class="insights-refresh-box">
+            <button type="button" class="btn btn-secondary" onclick="loadInsights()">
+              <span>🔄 Refresh Insights</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="two-col-grid mt-4">
+          <!-- Insights Feed -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Algorithmic Spending Observations</h3>
+                <p class="card-subtitle">Transparent mathematical rules applied to your records</p>
+              </div>
+            </div>
+
+            <div id="insightsListContainer" class="insights-feed">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Data Portability & Reports Card -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Data Export & Reports</h3>
+                <p class="card-subtitle">Take your financial records anywhere in standard formats</p>
+              </div>
+            </div>
+
+            <div class="export-options-grid">
+              <div class="export-option-card">
+                <span class="export-icon">📄</span>
+                <h4>Spreadsheet CSV Export</h4>
+                <p>Complete transaction history with categories, timestamps, and notes ready for Excel or Google Sheets.</p>
+                <button type="button" class="btn btn-secondary btn-block" onclick="exportData('csv')">
+                  Export CSV Spreadsheet
+                </button>
+              </div>
+
+              <div class="export-option-card">
+                <span class="export-icon">📑</span>
+                <h4>Formal PDF Financial Report</h4>
+                <p>Clean executive summary document with total cashflow, net balance, and breakdown table.</p>
+                <button type="button" class="btn btn-primary btn-block" onclick="exportData('pdf')">
+                  Download PDF Report
+                </button>
+              </div>
+            </div>
+
+            <div class="privacy-notice-box mt-4">
+              <span class="notice-icon">🛡️</span>
+              <div class="notice-text">
+                <strong>Privacy Guaranteed</strong>
+                <p>ExpenseWise runs completely self-contained. No third-party data broker access, no banking credentials stored, and 100% transparent analytics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: CATEGORIES & TOOLS (NEW FEATURE) -->
+      <section id="view-categories" class="app-view" style="display:none;">
+        <div class="two-col-grid">
+          <!-- Category Manager -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Manage Categories</h3>
+                <p class="card-subtitle">Customize income & expense categories to match your lifestyle</p>
+              </div>
+            </div>
+
+            <form id="addCategoryForm" class="inline-add-cat-form" onsubmit="handleAddCategory(event)">
+              <input name="name" type="text" placeholder="New Category Name (e.g. Pets, Gym, Stocks)" required minlength="2">
+              <select name="type" required>
+                <option value="expense">Expense Category</option>
+                <option value="income">Income Category</option>
+              </select>
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+
+            <div class="categories-list-box mt-4">
+              <h4>Existing Categories</h4>
+              <div id="categoriesChipsList" class="category-chips-grid">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Tools & Data Controls -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Data Management & Cloud Controls</h3>
+                <p class="card-subtitle">Demo data generator, JSON backup, and backend configuration</p>
+              </div>
+            </div>
+
+            <div class="tools-grid">
+              <!-- Demo Data Tool -->
+              <div class="tool-card">
+                <div class="tool-info">
+                  <strong>⚡ Load Rich Demo Data</strong>
+                  <p>Instantly populate 25+ realistic transactions, 4 budgets, and 3 savings goals to test all visual analytics.</p>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="seedSampleData()">
+                  Load Demo Data
+                </button>
+              </div>
+
+              <!-- Backup Tool -->
+              <div class="tool-card">
+                <div class="tool-info">
+                  <strong>💾 Backup All Data (JSON)</strong>
+                  <p>Download a complete snapshot of all transactions, budgets, goals, and categories.</p>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="backupDataJSON()">
+                  Download JSON Backup
+                </button>
+              </div>
+
+              <!-- Restore Tool -->
+              <div class="tool-card">
+                <div class="tool-info">
+                  <strong>📂 Restore from Backup (JSON)</strong>
+                  <p>Restore your data from a previously exported JSON backup file.</p>
+                </div>
+                <input type="file" id="restoreFileInput" accept=".json" style="display:none;" onchange="handleRestoreJSON(event)">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('restoreFileInput').click()">
+                  Restore Backup
+                </button>
+              </div>
+
+              <!-- Reset Tool -->
+              <div class="tool-card danger-tool">
+                <div class="tool-info">
+                  <strong>⚠️ Clear All Records</strong>
+                  <p>Reset your personal transactions, budgets, and goals to start fresh.</p>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="clearAllUserData()">
+                  Clear My Records
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Global Footer -->
+      <footer class="app-footer">
+        <div class="footer-left">
+          <span>◈ ExpenseWise — Advanced Personal Finance</span>
+          <span class="footer-dot">·</span>
+          <span>Open Source</span>
+        </div>
+        <div class="footer-right">
+          <span id="footerConnectionPill" class="footer-status-pill">Backend: Connected</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD / EDIT TRANSACTION -->
+  <div id="txModal" class="modal-backdrop" style="display:none;" onclick="handleModalBackdropClick(event, 'txModal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="txModalTitle">Add Transaction</h3>
+        <button type="button" class="modal-close-btn" onclick="closeTxModal()">✕</button>
+      </div>
+      <form id="txModalForm" onsubmit="handleModalTxSubmit(event)">
+        <input type="hidden" name="id" id="modalTxId">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type</label>
+            <select name="type" id="modalTxType" onchange="updateModalCategories(this.value)" required>
+              <option value="expense">Expense (-)</option>
+              <option value="income">Income (+)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Amount</label>
+            <input name="amount" id="modalTxAmount" type="number" step="0.01" min="0.01" placeholder="0.00" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category" id="modalTxCategory" required>
+              <!-- Dynamic -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Date</label>
+            <input name="transaction_date" id="modalTxDate" type="date" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Method</label>
+          <select name="payment_method" id="modalTxPayment">
+            <option value="UPI">UPI / Digital Wallet</option>
+            <option value="Card">Debit / Credit Card</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank transfer">Net Banking Transfer</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Note / Reference</label>
+          <input name="note" id="modalTxNote" placeholder="e.g. Groceries at Trader Joe's, Electricity bill">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeTxModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modalTxSubmitBtn">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: UPDATE SAVINGS GOAL DEPOSIT -->
+  <div id="goalDepositModal" class="modal-backdrop" style="display:none;" onclick="handleModalBackdropClick(event, 'goalDepositModal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="goalDepositTitle">Add Funds to Goal</h3>
+        <button type="button" class="modal-close-btn" onclick="closeGoalDepositModal()">✕</button>
+      </div>
+      <form id="goalDepositForm" onsubmit="handleGoalDepositSubmit(event)">
+        <input type="hidden" id="depositGoalId">
+        <p class="modal-subtext" id="depositGoalDetails">Current progress: ₹0 / ₹0</p>
+        
+        <div class="form-group">
+          <label for="depositAmountInput">Deposit / Adjust Amount</label>
+          <input id="depositAmountInput" type="number" step="0.01" min="0.01" placeholder="Amount to add" required>
+        </div>
+
+        <div class="quick-preset-btns">
+          <button type="button" class="btn-preset" onclick="setPresetDeposit(500)">+₹500</button>
+          <button type="button" class="btn-preset" onclick="setPresetDeposit(1000)">+₹1,000</button>
+          <button type="button" class="btn-preset" onclick="setPresetDeposit(5000)">+₹5,000</button>
+          <button type="button" class="btn-preset" onclick="setPresetDeposit(10000)">+₹10,000</button>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeGoalDepositModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Deposit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
