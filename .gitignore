@@ -1,0 +1,20 @@
+# Environments & Dependencies
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+node_modules/
+
+# Database & local data
+*.db
+backend/data/*.db
+ExpenseWise_Advanced_Personal_Expense_Tracker/ExpenseWise_Advanced/backend/data/*.db
+
+# Deployment & IDE
+.vercel
+.dist/
+.vscode/
+.idea/
+.DS_Store
+*.log
