@@ -2296,3 +2296,21 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('appShell').style.display = 'none';
   }
 });
+
+// Global window bindings for inline HTML handlers
+Object.assign(window, {
+  switchAuthTab, togglePasswordVisibility, handleLogin, handleRegister,
+  handleQuickDemoLogin, setAuthSession, logout, navigateTo, toggleMobileSidebar,
+  closeMobileSidebar, toggleTheme, changeCurrency, handleQuickAddTx,
+  openAddTxModal, openEditTxModal, closeTxModal, handleModalTxSubmit,
+  deleteTransaction, downloadSampleCSV, handleCSVFileSelected, cancelCSVImport,
+  confirmCSVImport, handleSaveBudget, deleteBudget, handleCreateGoal,
+  openGoalDepositModal, closeGoalDepositModal, setPresetDeposit,
+  handleGoalDepositSubmit, deleteGoal, handleCreateRecurring,
+  processDueRecurring, loadInsights, exportData, handleAddCategory,
+  seedSampleData, backupDataJSON, handleRestoreJSON, clearAllUserData,
+  handleModalBackdropClick, updateQuickCategories, updateModalCategories,
+  updateRecCategories, debounceFilterTransactions, filterTransactions,
+  resetFilters
+});
+
